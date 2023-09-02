@@ -2,7 +2,7 @@
 
 # docker build -t userver-demo -f Dockerfile .
 
-FROM ubuntu:22.04
+FROM ghcr.io/userver-framework/ubuntu-userver-build-base:v1
 
 RUN apt-get update && apt-get install -y \
     clang-14 \
