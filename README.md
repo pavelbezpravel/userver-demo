@@ -10,10 +10,11 @@ docker run \
   --rm \
   -it \
   -u 1000:1000 \
-  -v $(pwd):/tmp/userver-demo \
-  -v $(conan config home):/home/builder/.conan \
+  -v "$(pwd)":/tmp/userver-demo \
+  -v "$(conan config home)":/home/builder/.conan \
   userver-demo \
-  cmake -DCMAKE_BUILD_TYPE=Release \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
   -G Ninja \
   -DCMAKE_TOOLCHAIN_FILE=/tmp/userver-demo/clang.toolchain \
   -S /tmp/userver-demo \
@@ -23,8 +24,8 @@ docker run \
   --rm \
   -it \
   -u 1000:1000 \
-  -v $(pwd):/tmp/userver-demo \
-  -v $(conan config home):/home/builder/.conan \
+  -v "$(pwd)":/tmp/userver-demo \
+  -v "$(conan config home)":/home/builder/.conan \
   userver-demo \
   cmake \
   --build /tmp/userver-demo/cmake_build
