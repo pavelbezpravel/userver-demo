@@ -1,0 +1,9 @@
+[requires]
+grpc/1.54.3
+fmt/10.0.0
+boost/1.83.0
+gtest/1.14.0
+
+[generators]
+cmake_find_package
+cmake_paths
