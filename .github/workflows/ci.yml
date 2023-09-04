@@ -1,0 +1,24 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/userver-framework/ubuntu-userver-build-base:v1
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [ Debug, Release ]
+    name: "clang-14 ${{matrix.build}}"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: cmake
+        run: |
+          mkdir -p ${{github.workspace}}/cmake_build
+          cmake -DCMAKE_BUILD_TYPE=${{matrix.build}} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/clang.toolchain -S ${{github.workspace}} -B ${{github.workspace}}/cmake_build
+
+      - name: build
+        run: cmake --build ${{github.workspace}}/cmake_build
