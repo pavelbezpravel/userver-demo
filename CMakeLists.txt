@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 
+include(cmake/userver.cmake)
 include(cmake/conan.cmake)
 
 conan_cmake_autodetect(settings)
@@ -21,19 +22,6 @@ conan_cmake_install(
 )
 
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-
-set(USERVER_FEATURE_MONGODB OFF)
-set(USERVER_FEATURE_POSTGRESQL OFF)
-set(USERVER_FEATURE_REDIS OFF)
-set(USERVER_FEATURE_CLICKHOUSE OFF)
-set(USERVER_FEATURE_RABBITMQ OFF)
-set(USERVER_FEATURE_MYSQL OFF)
-set(USERVER_DOWNLOAD_PACKAGE_FMT OFF)
-set(USERVER_DOWNLOAD_PACKAGE_GTEST OFF)
-
-include(third_party/userver/cmake/SetupEnvironment.cmake)
-include(GNUInstallDirs)
-add_subdirectory(third_party/userver)
 
 set(target_name userver-demo)
 set(source_list src/main.cpp)
