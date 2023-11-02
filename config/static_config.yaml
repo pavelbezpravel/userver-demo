@@ -1,4 +1,3 @@
-# yaml
 components_manager:
     components:
         # The required common components
@@ -9,15 +8,10 @@ components_manager:
                     file_path: '@stderr'
                     level: debug
                     overflow_behavior: discard
-        tracer:
-            service-name: grpc-service
         dynamic-config:
-            fs-cache-path: ''
-        dynamic-config-fallbacks:
-            fallback-path: /tmp/userver-demo/config/dynamic_config_fallback.json
 
-# /// [gRPC sample - static config client]
-# yaml
+        # /// [gRPC sample - static config client]
+        # yaml
         # Creates gRPC clients
         grpc-client-factory:
             # The TaskProcessor for blocking connection initiation
@@ -32,21 +26,22 @@ components_manager:
             # The service endpoint (URI). We talk to our own service,
             # which is kind of pointless, but works for an example
             endpoint: '[::1]:8091'
-# /// [gRPC sample - static config client]
+        # /// [gRPC sample - static config client]
 
-# /// [gRPC sample - static config server]
-# yaml
+        # /// [gRPC sample - static config server]
+        # yaml
         # Common configuration for gRPC server
         grpc-server:
             # The single listening port for incoming RPCs
             port: 8091
+            completion-queue-count: 3
 
         # Our GreeterService implementation
         greeter-service:
             task-processor: main-task-processor
             greeting-prefix: Hello
             middlewares: []
-# /// [gRPC sample - static config server]
+        # /// [gRPC sample - static config server]
 
         # In this example, the tests still communicate with the microservice
         # using HTTP, so we still need an HTTP server and an HTTP handler.
@@ -63,19 +58,13 @@ components_manager:
         testsuite-support:
 
     default_task_processor: main-task-processor
-# /// [gRPC sample - task processor]
-# yaml
+    # /// [gRPC sample - task processor]
+    # yaml
     task_processors:
         grpc-blocking-task-processor:  # For blocking gRPC channel creation
-            thread_name: grpc-worker
             worker_threads: 2
-# /// [gRPC sample - task processor]
+        # /// [gRPC sample - task processor]
         main-task-processor:           # For non-blocking operations
-            thread_name: main-worker
-            worker_threads: 4
+            worker_threads: 8
         fs-task-processor:             # For blocking filesystem operations
-            thread_name: fs-worker
             worker_threads: 2
-    coro_pool:
-        initial_size: 500
-        max_size: 1000

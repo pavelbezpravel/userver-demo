@@ -1,5 +1,3 @@
-#include <userver/utest/using_namespace_userver.hpp>
-
 #include <chrono>
 #include <string_view>
 #include <utility>
@@ -23,19 +21,19 @@
 
 namespace samples {
 
-/// [gRPC sample - client]
 // A user-defined wrapper around api::GreeterServiceClient that provides
 // a simplified interface.
-class GreeterClient final : public components::LoggableComponentBase {
+class GreeterClient final : public userver::components::LoggableComponentBase {
  public:
   static constexpr std::string_view kName = "greeter-client";
 
-  GreeterClient(const components::ComponentConfig& config,
-                const components::ComponentContext& context)
+  GreeterClient(const userver::components::ComponentConfig& config,
+                const userver::components::ComponentContext& context)
       : LoggableComponentBase(config, context),
         // ClientFactory is used to create gRPC clients
         client_factory_(
-            context.FindComponent<ugrpc::client::ClientFactoryComponent>()
+            context
+                .FindComponent<userver::ugrpc::client::ClientFactoryComponent>()
                 .GetFactory()),
         // The client needs a fixed endpoint
         client_(client_factory_.MakeClient<api::GreeterServiceClient>(
@@ -43,15 +41,13 @@ class GreeterClient final : public components::LoggableComponentBase {
 
   std::string SayHello(std::string name);
 
-  static yaml_config::Schema GetStaticConfigSchema();
+  static userver::yaml_config::Schema GetStaticConfigSchema();
 
  private:
-  ugrpc::client::ClientFactory& client_factory_;
+  userver::ugrpc::client::ClientFactory& client_factory_;
   api::GreeterServiceClient client_;
 };
-/// [gRPC sample - client]
 
-/// [gRPC sample - client RPC handling]
 std::string GreeterClient::SayHello(std::string name) {
   api::GreetingRequest request;
   request.set_name(std::move(name));
@@ -59,7 +55,7 @@ std::string GreeterClient::SayHello(std::string name) {
   // Deadline must be set manually for each RPC
   auto context = std::make_unique<grpc::ClientContext>();
   context->set_deadline(
-      engine::Deadline::FromDuration(std::chrono::seconds{20}));
+      userver::engine::Deadline::FromDuration(std::chrono::seconds{20}));
 
   // Initiate the RPC. No actual actions have been taken thus far besides
   // preparing to send the request.
@@ -73,10 +69,10 @@ std::string GreeterClient::SayHello(std::string name) {
 
   return std::move(*response.mutable_greeting());
 }
-/// [gRPC sample - client RPC handling]
 
-yaml_config::Schema GreeterClient::GetStaticConfigSchema() {
-  return yaml_config::MergeSchemas<components::LoggableComponentBase>(R"(
+userver::yaml_config::Schema GreeterClient::GetStaticConfigSchema() {
+  return userver::yaml_config::MergeSchemas<
+      userver::components::LoggableComponentBase>(R"(
 type: object
 description: >
     a user-defined wrapper around api::GreeterServiceClient that provides
@@ -91,27 +87,24 @@ properties:
 )");
 }
 
-/// [gRPC sample - service]
 class GreeterServiceComponent final
     : public api::GreeterServiceBase::Component {
  public:
   static constexpr std::string_view kName = "greeter-service";
 
-  GreeterServiceComponent(const components::ComponentConfig& config,
-                          const components::ComponentContext& context)
+  GreeterServiceComponent(const userver::components::ComponentConfig& config,
+                          const userver::components::ComponentContext& context)
       : api::GreeterServiceBase::Component(config, context),
         prefix_(config["greeting-prefix"].As<std::string>()) {}
 
   void SayHello(SayHelloCall& call, api::GreetingRequest&& request) override;
 
-  static yaml_config::Schema GetStaticConfigSchema();
+  static userver::yaml_config::Schema GetStaticConfigSchema();
 
  private:
   const std::string prefix_;
 };
-/// [gRPC sample - service]
 
-/// [gRPC sample - server RPC handling]
 void GreeterServiceComponent::SayHello(
     api::GreeterServiceBase::SayHelloCall& call,
     api::GreetingRequest&& request) {
@@ -126,10 +119,10 @@ void GreeterServiceComponent::SayHello(
   // client will receive an Internal Error (500) response.
   call.Finish(response);
 }
-/// [gRPC sample - server RPC handling]
 
-yaml_config::Schema GreeterServiceComponent::GetStaticConfigSchema() {
-  return yaml_config::MergeSchemas<ugrpc::server::ServiceComponentBase>(R"(
+userver::yaml_config::Schema GreeterServiceComponent::GetStaticConfigSchema() {
+  return userver::yaml_config::MergeSchemas<
+      userver::ugrpc::server::ServiceComponentBase>(R"(
 type: object
 description: gRPC sample greater service component
 additionalProperties: false
@@ -142,18 +135,19 @@ properties:
 
 // Our Python tests use HTTP for all the samples, so we add an HTTP handler,
 // through which we test both the client side and the server side.
-class GreeterHttpHandler final : public server::handlers::HttpHandlerBase {
+class GreeterHttpHandler final
+    : public userver::server::handlers::HttpHandlerBase {
  public:
   static constexpr std::string_view kName = "greeter-http-handler";
 
-  GreeterHttpHandler(const components::ComponentConfig& config,
-                     const components::ComponentContext& context)
+  GreeterHttpHandler(const userver::components::ComponentConfig& config,
+                     const userver::components::ComponentContext& context)
       : HttpHandlerBase(config, context),
         grpc_greeter_client_(context.FindComponent<GreeterClient>()) {}
 
   std::string HandleRequestThrow(
-      const server::http::HttpRequest& request,
-      server::request::RequestContext&) const override {
+      const userver::server::http::HttpRequest& request,
+      userver::server::request::RequestContext&) const override {
     return grpc_greeter_client_.SayHello(request.RequestBody());
   }
 
@@ -163,18 +157,14 @@ class GreeterHttpHandler final : public server::handlers::HttpHandlerBase {
 
 }  // namespace samples
 
-/// [gRPC sample - main]
 int main(int argc, char* argv[]) {
   const auto component_list =
-      /// [gRPC sample - ugrpc registration]
-      components::MinimalServerComponentList()
-          .Append<components::TestsuiteSupport>()
-          .Append<ugrpc::client::ClientFactoryComponent>()
-          .Append<ugrpc::server::ServerComponent>()
-          /// [gRPC sample - ugrpc registration]
+      userver::components::MinimalServerComponentList()
+          .Append<userver::components::TestsuiteSupport>()
+          .Append<userver::ugrpc::client::ClientFactoryComponent>()
+          .Append<userver::ugrpc::server::ServerComponent>()
           .Append<samples::GreeterClient>()
           .Append<samples::GreeterServiceComponent>()
           .Append<samples::GreeterHttpHandler>();
-  return utils::DaemonMain(argc, argv, component_list);
+  return userver::utils::DaemonMain(argc, argv, component_list);
 }
-/// [gRPC service sample - main]
