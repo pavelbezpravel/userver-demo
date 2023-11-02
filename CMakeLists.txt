@@ -7,7 +7,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 
-include(cmake/userver.cmake)
 include(cmake/conan.cmake)
 
 conan_cmake_autodetect(settings)
@@ -22,17 +21,16 @@ conan_cmake_install(
 )
 
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+include(cmake/userver.cmake)
 
 set(target_name userver-demo)
 set(source_list src/main.cpp)
 
 include(GrpcTargets)
-add_grpc_library(${target_name}_proto PROTOS samples/greeter.proto)
+add_grpc_library(${target_name}-proto PROTOS samples/greeter.proto)
 
 add_executable(${target_name} ${source_list})
 target_link_libraries(${target_name}
     PRIVATE
-        userver-core
-        ${target_name}_proto
+        ${target_name}-proto
 )
-
