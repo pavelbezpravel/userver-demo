@@ -2,7 +2,7 @@
 
 # docker build -t userver-demo -f Dockerfile .
 
-FROM ghcr.io/userver-framework/ubuntu-userver-build-base:v1
+FROM ghcr.io/userver-framework/ubuntu-userver-build-base:v2
 
 RUN apt-get update && apt-get install -y \
     clang-14 \
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     valgrind
 
-RUN pip3 install conan==1.59.0
+RUN pip3 install conan==1.61.0
 
 ARG UID=1000
 RUN useradd -m -u ${UID} -s /bin/bash builder
