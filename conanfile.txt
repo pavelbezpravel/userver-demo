@@ -1,9 +1,6 @@
 [requires]
-grpc/1.54.3
-fmt/10.1.1
-boost/1.83.0
-gtest/1.14.0
+userver/1.0.0
 
 [generators]
-cmake_find_package
-cmake_paths
+CMakeDeps
+CMakeToolchain

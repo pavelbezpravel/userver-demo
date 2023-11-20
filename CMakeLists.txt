@@ -8,20 +8,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 
 include(cmake/conan.cmake)
-
-conan_cmake_autodetect(settings)
 conan_cmake_install(
     PATH_OR_REFERENCE ${CMAKE_SOURCE_DIR}
     INSTALL_FOLDER ${CMAKE_BINARY_DIR}
     BUILD missing
-    REMOTE conancenter
-    SETTINGS ${settings}
     ENV "CONAN_CMAKE_GENERATOR=${CMAKE_GENERATOR}"
     CONF "tools.cmake.cmaketoolchain:generator=${CMAKE_GENERATOR}"
+    PROFILE "userver-demo/default"
+    PROFILE_BUILD "userver-demo/default"
+    PROFILE_HOST "userver-demo/default"
 )
+include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-include(cmake/userver.cmake)
+find_package(userver 1.0.0 EXACT REQUIRED)
+
+add_grpc_library(${target_name}-proto PROTOS samples/greeter.proto)
 
 set(target_name userver-demo)
 set(source_list
@@ -34,11 +35,23 @@ set(source_list
     src/main.cpp
 )
 
-include(GrpcTargets)
-add_grpc_library(${target_name}-proto PROTOS samples/greeter.proto)
-
 add_executable(${target_name} ${source_list})
 target_link_libraries(${target_name}
     PRIVATE
         ${target_name}-proto
+)
+target_compile_options(${PROJECT_NAME}
+    PRIVATE
+        -Werror
+        -Wall
+        -Wextra
+        -Wassign-enum
+        -Wcast-align
+        -Wcast-qual
+        -Wconversion
+        -Wextra-semi
+        -Wsign-compare
+        -Wsign-conversion
+        -pedantic
+        -pedantic-errors
 )
