@@ -1,0 +1,26 @@
+{
+  "name": "userver-demo-env",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "../"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python"
+      ]
+    }
+  },
+  "forwardPorts": [
+    8091,
+    8092
+  ],
+  "remoteUser": "builder",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/userver-demo,type=bind,consistency=default",
+  "workspaceFolder": "/workspaces/userver-demo",
+  "shutdownAction": "stopContainer"
+}
