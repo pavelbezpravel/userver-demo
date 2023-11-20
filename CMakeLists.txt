@@ -24,7 +24,15 @@ include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 include(cmake/userver.cmake)
 
 set(target_name userver-demo)
-set(source_list src/main.cpp)
+set(source_list
+    src/components/samples/greeter_client_component.cpp
+    src/components/samples/greeter_client_component.h
+    src/components/samples/greeter_http_handler_component.cpp
+    src/components/samples/greeter_http_handler_component.h
+    src/components/samples/greeter_service_component.cpp
+    src/components/samples/greeter_service_component.h
+    src/main.cpp
+)
 
 include(GrpcTargets)
 add_grpc_library(${target_name}-proto PROTOS samples/greeter.proto)
