@@ -1,40 +1,40 @@
 components_manager:
-    components:
-        task_processors:
-            grpc-blocking-task-processor:
-                worker_threads: 2
-            main-task-processor:
-                worker_threads: 8
-            fs-task-processor:
-                worker_threads: 2
-        default_task_processor: main-task-processor
-        logging:
-            fs-task-processor: fs-task-processor
-            loggers:
-                default:
-                    file_path: '@stderr'
-                    level: debug
-                    overflow_behavior: discard
-        dynamic-config:
-        grpc-client-factory:
-            task-processor: grpc-blocking-task-processor
-            channel-args: { }
-        greeter-client:
-            endpoint: '[::1]:8091'
-        grpc-server:
-            port: 8091
-            completion-queue-count: 3
-        greeter-service:
-            task-processor: main-task-processor
-            greeting-prefix: Hello
-            middlewares: [ ]
-        server:
-            listener:
-                port: 8092
-                task_processor: main-task-processor
-        auth-checker-settings:
-        greeter-http-handler:
-            path: /hello
-            method: POST
-            task_processor: main-task-processor
-        testsuite-support:
+  task_processors:
+    grpc-blocking-task-processor:
+      worker_threads: 2
+      thread_name: grpc-worker
+    main-task-processor:
+      worker_threads: 8
+    fs-task-processor:
+        worker_threads: 2
+  default_task_processor: main-task-processor
+  components:
+    logging:
+      fs-task-processor: fs-task-processor
+      loggers:
+        default:
+          file_path: '@stderr'
+          level: debug
+          overflow_behavior: discard
+    grpc-client-factory:
+      task-processor: grpc-blocking-task-processor
+      channel-args: { }
+    greeter-client:
+      endpoint: '[::1]:8091'
+    grpc-server:
+      port: 8091
+      completion-queue-count: 3
+    greeter-service:
+      task-processor: main-task-processor
+      greeting-prefix: Hello
+      middlewares: [ ]
+    server:
+      listener:
+        port: 8092
+        task_processor: main-task-processor
+    auth-checker-settings:
+    greeter-http-handler:
+      path: /hello
+      method: POST
+      task_processor: main-task-processor
+    testsuite-support:
