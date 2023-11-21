@@ -9,7 +9,7 @@ void GreeterServiceComponent::SayHello(
     api::GreeterServiceBase::SayHelloCall& call,
     api::GreetingRequest&& request) {
   api::GreetingResponse response{};
-  response.set_greeting(fmt::format("{}, {}!", prefix_, request.name()));
+  response.set_greeting(fmt::format("{}, {}!\n", prefix_, request.name()));
 
   call.Finish(response);
 }
