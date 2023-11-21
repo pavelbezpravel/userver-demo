@@ -35,6 +35,6 @@ components_manager:
     auth-checker-settings:
     greeter-http-handler:
       path: /hello
-      method: POST
+      method: GET,POST
       task_processor: main-task-processor
     testsuite-support:
