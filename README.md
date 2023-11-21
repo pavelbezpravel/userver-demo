@@ -1,5 +1,7 @@
 # userver-demo
 
+Clone repo with `--recurse-submodules` option or run `git submodule update --init`
+
 ## Requirements
 - docker 24.0.7
 - docker compose 2.21.0
