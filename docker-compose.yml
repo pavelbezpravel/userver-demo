@@ -1,17 +1,15 @@
 version: "3.3"
 services:
   userver-demo:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: pavelbezpravel/userver-demo:0.1.app
     command: ["./userver-demo", "-c", "/etc/userver-demo/configs/static_config.yaml"]
     configs:
       - source: userver-demo-static-config
         target: /etc/userver-demo/configs/static_config.yaml
     container_name: userver-demo-local
     ports:
-      - "8091:8091"
-      - "8092:8092"
+      - "127.0.0.1:8091:8091"
+      - "127.0.0.1:8092:8092"
 configs:
   userver-demo-static-config:
     file: ./configs/static_config.yaml

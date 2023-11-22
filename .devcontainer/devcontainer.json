@@ -1,9 +1,6 @@
 {
   "name": "userver-demo-env",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "../"
-  },
+  "image": "pavelbezpravel/userver-demo:0.1.dev",
   "customizations": {
     "vscode": {
       "extensions": [
