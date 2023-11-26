@@ -1,6 +1,6 @@
 {
   "name": "userver-demo-env",
-  "image": "pavelbezpravel/userver-demo:0.1.dev",
+  "image": "pavelbezpravel/userver-demo-build-base:0.1.0",
   "customizations": {
     "vscode": {
       "extensions": [

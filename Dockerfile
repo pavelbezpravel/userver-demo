@@ -1,18 +1,17 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.2
 
-FROM pavelbezpravel/userver-demo:0.1.dev AS builder
+FROM pavelbezpravel/userver-demo-build-base:0.1.0 AS builder
 
 WORKDIR /userver-demo
 COPY ./ ./
-
 RUN cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE=clang.toolchain \
-    -S . \
-    -B cmake_build \
+    -S /userver-demo \
+    -B /userver-demo/cmake_build \
     && cmake \
-    --build cmake_build \
+    --build /userver-demo/cmake_build \
     -j "$(nproc)"
 
 FROM ubuntu:22.04 AS runner
