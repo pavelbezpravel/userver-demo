@@ -1,6 +1,9 @@
 {
   "name": "userver-demo-env",
-  "image": "pavelbezpravel/userver-demo-build-base:0.1.0",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "userver-demo-dev",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,7 +20,6 @@
     8092
   ],
   "remoteUser": "builder",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/userver-demo,type=bind,consistency=default",
   "workspaceFolder": "/workspaces/userver-demo",
-  "shutdownAction": "stopContainer"
+  "shutdownAction": "stopCompose"
 }

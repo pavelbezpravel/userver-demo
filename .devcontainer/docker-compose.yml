@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  userver-demo-dev:
+    image: pavelbezpravel/userver-demo-build-base:0.1.0
+    container_name: userver-demo-dev
+    ports:
+      - "127.0.0.1:8091:8091"
+      - "127.0.0.1:8092:8092"
+    volumes:
+      - ../:/workspaces/userver-demo
