@@ -1,7 +1,9 @@
 version: "3.3"
 services:
   userver-demo:
-    image: pavelbezpravel/userver-demo:0.1.0
+    build:
+      context: ./
+      dockerfile: Dockerfile
     command: ["./userver-demo", "-c", "/etc/userver-demo/configs/static_config.yaml"]
     configs:
       - source: userver-demo-static-config
