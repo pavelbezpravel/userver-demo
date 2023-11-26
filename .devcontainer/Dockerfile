@@ -3,11 +3,6 @@
 FROM ubuntu:22.04 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND=nointeractive apt-get install -y --no-install-recommends \
-    tzdata \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
     ccache \
     clangd-14 \
     clang-14 \
@@ -32,6 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-protobuf \
     python3-virtualenv \
     python3-voluptuous \
+    tzdata \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --no-cache-dir conan==1.62.0
