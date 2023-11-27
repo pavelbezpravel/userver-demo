@@ -31,22 +31,21 @@ docker run \
   -it \
   -u 1000:1000 \
   -v "$(pwd)":/workspaces/userver-demo \
+  -w "/workspaces/userver-demo" \
   pavelbezpravel/userver-demo-build-base:0.1.0 \
   cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=/workspaces/userver-demo/clang.toolchain \
-  -S /workspaces/userver-demo \
-  -B /workspaces/userver-demo/cmake_build
+  --preset=release
 
 docker run \
   --rm \
   -it \
   -u 1000:1000 \
   -v "$(pwd)":/workspaces/userver-demo \
+  -w "/workspaces/userver-demo" \
   pavelbezpravel/userver-demo-build-base:0.1.0 \
   cmake \
-  --build /workspaces/userver-demo/cmake_build
+  --build \
+  --preset=release
 ```
 
 ### Dev Container Cli
@@ -60,15 +59,12 @@ devcontainer up --workspace-folder .
 
 devcontainer exec --workspace-folder . \
   cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=/workspaces/userver-demo/clang.toolchain \
-  -S /workspaces/userver-demo \
-  -B /workspaces/userver-demo/cmake_build
+  --preset=release
 
 devcontainer exec --workspace-folder . \
   cmake \
-  --build /workspaces/userver-demo/cmake_build
+  --build \
+  --preset=release
 ```
 
 ## Run
