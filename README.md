@@ -71,7 +71,7 @@ devcontainer exec --workspace-folder . \
 
 You can run existing binary:
 ```bash
-cmake_buid/userver-demo -c configs/static_config.yaml
+cmake-build-release/userver-demo -c configs/static_config.yaml
 ```
 
 Also you can run dockerized application via docker compose:
