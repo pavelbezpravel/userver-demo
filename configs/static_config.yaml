@@ -16,11 +16,6 @@ components_manager:
           file_path: '@stderr'
           level: debug
           overflow_behavior: discard
-    grpc-client-factory:
-      task-processor: grpc-blocking-task-processor
-      channel-args: { }
-    greeter-client:
-      endpoint: '[::1]:8091'
     grpc-server:
       port: 8091
       completion-queue-count: 3
@@ -32,9 +27,3 @@ components_manager:
       listener:
         port: 8092
         task_processor: main-task-processor
-    auth-checker-settings:
-    greeter-http-handler:
-      path: /hello
-      method: GET,POST
-      task_processor: main-task-processor
-    testsuite-support:

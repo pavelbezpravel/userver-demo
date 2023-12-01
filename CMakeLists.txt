@@ -25,10 +25,6 @@ find_package(userver 1.0.0 EXACT REQUIRED)
 add_grpc_library(userver-demo-proto PROTOS samples/greeter.proto)
 
 add_executable(${PROJECT_NAME}
-    src/components/samples/greeter_client_component.cpp
-    src/components/samples/greeter_client_component.h
-    src/components/samples/greeter_http_handler_component.cpp
-    src/components/samples/greeter_http_handler_component.h
     src/components/samples/greeter_service_component.cpp
     src/components/samples/greeter_service_component.h
     src/main.cpp
