@@ -56,4 +56,3 @@ RUN --mount=type=bind,source=./third_party/userver,target=./userver \
     && conan remove "*" --builds --src --force
 WORKDIR /home/builder
 EXPOSE 8091 8092
-CMD ["tail", "-f", "/dev/null"]
