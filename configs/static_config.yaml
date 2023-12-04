@@ -23,6 +23,9 @@ components_manager:
       task-processor: main-task-processor
       greeting-prefix: Hello
       middlewares: [ ]
+    health-service:
+      task-processor: main-task-processor
+      middlewares: [ ]
     server:
       listener:
         port: 8092

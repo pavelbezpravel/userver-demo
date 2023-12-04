@@ -22,11 +22,13 @@ include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 
 find_package(userver 1.0.0 EXACT REQUIRED)
 
-add_grpc_library(userver-demo-proto PROTOS samples/greeter.proto)
+add_grpc_library(userver-demo-proto PROTOS samples/greeter.proto health/health.proto)
 
 add_executable(${PROJECT_NAME}
     src/components/samples/greeter_service_component.cpp
     src/components/samples/greeter_service_component.h
+    src/components/health/health_service_component.cpp
+    src/components/health/health_service_component.h
     src/main.cpp
 )
 target_link_libraries(${PROJECT_NAME}
