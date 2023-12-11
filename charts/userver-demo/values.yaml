@@ -1,0 +1,23 @@
+replicas: 1
+namespace: pavelbezpravel
+minReadySeconds: 10
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "100m"
+  limits:
+    memory: "64Mi"
+    cpu: "500m"
+image:
+  repository: pavelbezpravel/userver-demo
+  pullPolicy: IfNotPresent
+  tag: "0.2.0"
+containerPort: 8091
+service:
+  type: ClusterIP
+  port: 8091
+
