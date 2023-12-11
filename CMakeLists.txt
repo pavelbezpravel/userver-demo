@@ -17,6 +17,9 @@ conan_cmake_install(
     PROFILE "userver-demo/default"
     PROFILE_BUILD "userver-demo/default"
     PROFILE_HOST "userver-demo/default"
+    SETTINGS "build_type=${CMAKE_BUILD_TYPE}"
+    SETTINGS_BUILD "build_type=${CMAKE_BUILD_TYPE}"
+    SETTINGS_HOST "build_type=${CMAKE_BUILD_TYPE}"
 )
 include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 
