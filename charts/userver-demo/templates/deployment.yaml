@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace  }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  minReadySeconds: {{ .Values.minReadySeconds  }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge  }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable  }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository  }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: grpc-insecure
+              containerPort: {{ .Values.containerPort  }}
+          livenessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "grpc_health_probe -addr=:{{ .Values.containerPort  }} 2>&1 | grep -q SERVING"]
+            initialDelaySeconds: 10
+          readinessProbe:
+            exec:
+              command: ["grpc_health_probe", "-addr=:{{ .Values.containerPort  }}"]
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory  }}
+              cpu: {{ .Values.resources.requests.cpu  }}
+            limits:
+              memory: {{ .Values.resources.limits.memory  }}
+              cpu: {{ .Values.resources.limits.cpu  }}

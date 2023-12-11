@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "userver-demo.fullname" . }}
+  labels:
+    {{- include "userver-demo.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: grpc-insecure
+      name: grpc-insecure
+  selector:
+    {{- include "userver-demo.selectorLabels" . | nindent 4 }}
