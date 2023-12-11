@@ -4,5 +4,11 @@ set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=lld-14 -rdynamic")
 set(CMAKE_SHARED_LINKER_FLAGS "-fuse-ld=lld-14")
 set(CMAKE_C_STANDARD_LIBRARIES "-lc -lm")
 set(CMAKE_CXX_STANDARD_LIBRARIES "-lc -lm")
+
+if(CCACHE_PATH)
+    set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PATH}"  CACHE STRING "C compiler launcher")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PATH}" CACHE STRING "C++ compiler launcher")
+endif()
+
 set(ENV{CC} clang-14)
 set(ENV{CXX} clang++-14)
