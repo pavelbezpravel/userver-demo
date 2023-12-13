@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   userver-demo-dev:
-    image: pavelbezpravel/userver-demo-build-base:0.2.0
+    image: pavelbezpravel/userver-demo-build-base:0.3.0
     container_name: userver-demo-dev
     command: tail -f /dev/null
     ports:

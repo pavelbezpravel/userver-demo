@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.2
 
-FROM pavelbezpravel/userver-demo-build-base:0.2.0 AS builder
+FROM pavelbezpravel/userver-demo-build-base:0.3.0 AS builder
 
 WORKDIR /userver-demo
 COPY ./ ./
