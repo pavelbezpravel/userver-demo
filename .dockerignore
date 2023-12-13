@@ -1,10 +1,13 @@
 charts/
+.clang-format
 cmake_build/
 cmake-build-debug/
 cmake-build-release/
+CMakeUserPresets.json
 .devcontainer/
 docker-compose.yml
 Dockerfile
+.editorconfig
 .git/
 .gitignore
 .gitmodules
