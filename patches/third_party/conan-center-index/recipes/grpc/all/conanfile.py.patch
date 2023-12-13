@@ -1,0 +1,16 @@
+diff --git a/third_party/conan-center-index/recipes/grpc/all/conanfile.py b/third_party/conan-center-index/recipes/grpc/all/conanfile.py
+index 998e680..f24987f 100644
+--- a/third_party/conan-center-index/recipes/grpc/all/conanfile.py
++++ b/third_party/conan-center-index/recipes/grpc/all/conanfile.py
+@@ -93,9 +93,9 @@ class GrpcConan(ConanFile):
+         else:
+             self.requires("abseil/20230125.3", transitive_headers=True, transitive_libs=True)
+         self.requires("c-ares/1.19.1")
+-        self.requires("openssl/[>=1.1 <4]")
++        self.requires("openssl/1.1.1s")
+         self.requires("re2/20230301")
+-        self.requires("zlib/[>=1.2.11 <2]")
++        self.requires("zlib/1.2.13")
+         self.requires("protobuf/3.21.12", transitive_headers=True, transitive_libs=True, run=can_run(self))
+ 
+     def package_id(self):
