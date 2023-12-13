@@ -18,6 +18,7 @@ RUN apt-get update && DEBIAN_FRONTEND=nointeractive apt-get install -y --no-inst
     make \
     m4 \
     ninja-build \
+    patch \
     pkg-config \
     python3 \
     python3-dev \
@@ -62,15 +63,45 @@ WORKDIR /conan
 RUN --mount=type=bind,source=./conan,target=./ \
     conan config install .
 
+WORKDIR /grpc
+# TODO [pavelbezpravel]: try to avoid using sudo.
+RUN --mount=type=bind,source=./third_party/conan-center-index/recipes/grpc,rw,target=./ \
+    --mount=type=bind,source=./patches/third_party/conan-center-index/recipes/grpc/all/,rw,target=./patches \
+    sudo patch ./all/conanfile.py ./patches/conanfile.py.patch \
+    && conan create \
+    ./all 1.54.2@ \
+    --test-folder=None \
+    --build=missing \
+    -pr=userver-demo/default \
+    -pr:b=userver-demo/default \
+    -pr:h=userver-demo/default \
+    -s build_type=Release \
+    -s:b build_type=Release \
+    -s:h build_type=Release \
+    && conan create \
+    ./all 1.54.2@ \
+    --test-folder=None \
+    --build=missing \
+    -pr=userver-demo/default \
+    -pr:b=userver-demo/default \
+    -pr:h=userver-demo/default \
+    -s build_type=Debug \
+    -s:b build_type=Debug \
+    -s:h build_type=Debug
+
 # INFO [pavelbezpravel]:
 # We copy the existing third_party/userver instead of cloning the repository,
 # because in this case we can manually checkout to commits that are safe and reliable.
 # I hope userver will be added to the conan-center-index soon.
 
 WORKDIR /userver-framework
-RUN --mount=type=bind,source=./third_party/userver,target=./userver \
-    conan create \
-    /userver-framework/userver \
+# TODO [pavelbezpravel]: try to avoid using sudo.
+RUN --mount=type=bind,source=./third_party/userver,rw,target=./userver \
+    --mount=type=bind,source=./patches/third_party/userver/,rw,target=./patches \
+    sudo patch ./userver/conanfile.py ./patches/conanfile.py.patch \
+    && conan create \
+    ./userver \
+    --test-folder=None \
     --build=missing \
     -pr=userver-demo/default \
     -pr:b=userver-demo/default \
@@ -88,5 +119,6 @@ RUN --mount=type=bind,source=./third_party/userver,target=./userver \
     -s:b build_type=Debug \
     -s:h build_type=Debug \
     && conan remove "*" --builds --src --force
-WORKDIR /home/builder
+
+WORKDIR /home/${USERNAME}
 EXPOSE 8091 8092
