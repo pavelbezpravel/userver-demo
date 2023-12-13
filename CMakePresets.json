@@ -15,12 +15,10 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": {
           "type": "BOOL",
           "value": "ON"
-        }
-
-      },
-      "vendor": {
-        "jetbrains.com/clion": {
-          "toolchain": "userver-demo"
+        },
+        "CCACHE_PATH": {
+            "type": "FILEPATH",
+            "value": "/usr/local/bin/ccache"
         }
       }
     },
