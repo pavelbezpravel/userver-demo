@@ -1,9 +1,9 @@
 {
-  "name": "userver-demo-env",
+  "name": "userver-demo-devcontainer",
   "dockerComposeFile": [
     "docker-compose.yml"
   ],
-  "service": "userver-demo-dev",
+  "service": "userver-demo",
   "customizations": {
     "vscode": {
       "extensions": [

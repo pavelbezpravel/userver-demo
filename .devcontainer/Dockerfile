@@ -110,7 +110,8 @@ RUN --mount=type=bind,source=./third_party/userver,rw,target=./userver \
     -s:b build_type=Release \
     -s:h build_type=Release \
     && conan create \
-    /userver-framework/userver \
+    ./userver \
+    --test-folder=None \
     --build=missing \
     -pr=userver-demo/default \
     -pr:b=userver-demo/default \
