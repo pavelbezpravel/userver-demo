@@ -50,26 +50,28 @@ RUN export V=4.8.1 \
 
 ARG USERNAME=builder
 ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_GID=${USER_UID}
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m -s /bin/bash ${USERNAME} \
+    && chown -R ${USER_UID}:${USER_GID} /home/${USERNAME} \
+    && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-USER $USERNAME
+USER ${USERNAME}:${USERNAME}
 
 WORKDIR /conan
 RUN --mount=type=bind,source=./conan,target=./ \
+    --mount=type=cache,target=/home/${USERNAME}/.conan \
     conan config install .
 
-WORKDIR /grpc
-# TODO [pavelbezpravel]: try to avoid using sudo.
-RUN --mount=type=bind,source=./third_party/conan-center-index/recipes/grpc,rw,target=./ \
-    --mount=type=bind,source=./patches/third_party/conan-center-index/recipes/grpc/all/,rw,target=./patches \
-    sudo patch ./all/conanfile.py ./patches/conanfile.py.patch \
+WORKDIR /home/${USERNAME}/third_party
+RUN --mount=type=bind,rw,source=./third_party/conan-center-index/recipes/grpc,target=./grpc \
+    --mount=type=bind,rw,source=./patches/third_party/conan-center-index/recipes/grpc/all/,target=./patches \
+    --mount=type=cache,target=/home/${USERNAME}/.conan \
+    patch -u ./grpc/all/conanfile.py < ./patches/conanfile.py.patch \
     && conan create \
-    ./all 1.54.2@ \
+    ./grpc/all 1.54.2@ \
     --test-folder=None \
     --build=missing \
     -pr=userver-demo/default \
@@ -79,7 +81,7 @@ RUN --mount=type=bind,source=./third_party/conan-center-index/recipes/grpc,rw,ta
     -s:b build_type=Release \
     -s:h build_type=Release \
     && conan create \
-    ./all 1.54.2@ \
+    ./grpc/all 1.54.2@ \
     --test-folder=None \
     --build=missing \
     -pr=userver-demo/default \
@@ -94,11 +96,34 @@ RUN --mount=type=bind,source=./third_party/conan-center-index/recipes/grpc,rw,ta
 # because in this case we can manually checkout to commits that are safe and reliable.
 # I hope userver will be added to the conan-center-index soon.
 
-WORKDIR /userver-framework
-# TODO [pavelbezpravel]: try to avoid using sudo.
-RUN --mount=type=bind,source=./third_party/userver,rw,target=./userver \
-    --mount=type=bind,source=./patches/third_party/userver/,rw,target=./patches \
-    sudo patch ./userver/conanfile.py ./patches/conanfile.py.patch \
+# install the requirements specified in the userver recipe.
+RUN --mount=type=bind,rw,source=./third_party/userver,target=./userver \
+    --mount=type=bind,rw,source=./patches/third_party/userver/,target=./patches \
+    --mount=type=cache,target=/home/${USERNAME}/.conan \
+    patch -u ./userver/conanfile.py < ./patches/conanfile.py.patch \
+    && conan install \
+    ./userver \
+    --build=missing \
+    -pr=userver-demo/default \
+    -pr:b=userver-demo/default \
+    -pr:h=userver-demo/default \
+    -s build_type=Release \
+    -s:b build_type=Release \
+    -s:h build_type=Release \
+    && conan create \
+    ./userver \
+    --build=missing \
+    -pr=userver-demo/default \
+    -pr:b=userver-demo/default \
+    -pr:h=userver-demo/default \
+    -s build_type=Debug \
+    -s:b build_type=Debug \
+    -s:h build_type=Debug
+
+# build a binary package for the userver recipe.
+RUN --mount=type=bind,rw,source=./third_party/userver,target=./userver \
+    --mount=type=bind,rw,source=./patches/third_party/userver/,target=./patches \
+    patch -u ./userver/conanfile.py < ./patches/conanfile.py.patch \
     && conan create \
     ./userver \
     --test-folder=None \
