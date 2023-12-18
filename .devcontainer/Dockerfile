@@ -66,6 +66,8 @@ RUN --mount=type=bind,source=./conan,target=./ \
     conan config install .
 
 WORKDIR /home/${USERNAME}/third_party
+
+# INFO [pavelbezpravel]: there is no grpc/1.54.2 package in conan-center-index, that's why we build a binary package manually.
 RUN --mount=type=bind,rw,source=./third_party/conan-center-index/recipes/grpc,target=./grpc \
     --mount=type=bind,rw,source=./patches/third_party/conan-center-index/recipes/grpc/all/,target=./patches \
     --mount=type=cache,target=/home/${USERNAME}/.conan \
@@ -96,7 +98,7 @@ RUN --mount=type=bind,rw,source=./third_party/conan-center-index/recipes/grpc,ta
 # because in this case we can manually checkout to commits that are safe and reliable.
 # I hope userver will be added to the conan-center-index soon.
 
-# install the requirements specified in the userver recipe.
+# INFO [pavelbezpravel]: install the requirements specified in the userver recipe.
 RUN --mount=type=bind,rw,source=./third_party/userver,target=./userver \
     --mount=type=bind,rw,source=./patches/third_party/userver/,target=./patches \
     --mount=type=cache,target=/home/${USERNAME}/.conan \
@@ -120,7 +122,7 @@ RUN --mount=type=bind,rw,source=./third_party/userver,target=./userver \
     -s:b build_type=Debug \
     -s:h build_type=Debug
 
-# build a binary package for the userver recipe.
+# INFO [pavelbezpravel]: build a binary package for the userver recipe.
 RUN --mount=type=bind,rw,source=./third_party/userver,target=./userver \
     --mount=type=bind,rw,source=./patches/third_party/userver/,target=./patches \
     patch -u ./userver/conanfile.py < ./patches/conanfile.py.patch \
